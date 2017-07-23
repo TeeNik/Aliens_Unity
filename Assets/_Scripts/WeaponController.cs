@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour {
 
-    GameObject bullet;
+    public GameObject bullet;
     float fireTime = .5f;
     int poolAmount = 1000;
     List<GameObject> bullets;
+
+    public float speed = 0.1f;
 
 	// Use this for initialization
 	void Start () {
@@ -22,6 +24,10 @@ public class WeaponController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+        if (Input.GetMouseButtonDown(0))
+        {
+            GameObject g = (GameObject)Instantiate(bullet);
+            g.GetComponent<Rigidbody2D>().MovePosition(transform.position + Input.mousePosition*speed);
+        }
 	}
 }
