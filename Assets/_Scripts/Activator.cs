@@ -5,19 +5,25 @@ using UnityEngine;
 public class Activator : MonoBehaviour {
 
     public KeyCode key;
+
     bool active = false;
     GameObject note;
+    SpriteRenderer sr;
 
-	// Use this for initialization
-	void Start () {
-		
+  
+    void Awake () {
+        sr = GetComponent<SpriteRenderer>();
 	}
 	
-	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(key)&&active)
+        if (Input.GetKeyDown(key))
         {
-            Destroy(note);
+            StartCoroutine(Pressed());
+            if (active)
+            {
+                Destroy(note);
+            }
+
         }
 	}
 
@@ -33,5 +39,13 @@ public class Activator : MonoBehaviour {
     private void OnTriggerExit2D(Collider2D collision)
     {
         active = false;
+    }
+
+    IEnumerator Pressed()
+    {
+        Color old = sr.color;
+        sr.color = new Color(51, 51, 51, 255);
+        yield return new WaitForSeconds(0.1f);
+        sr.color = old;
     }
 }

@@ -5,7 +5,6 @@ using UnityEngine;
 public class Note : MonoBehaviour {
 
     public float speed = 2;
-
     Rigidbody2D rb;
 
     private void Awake()
