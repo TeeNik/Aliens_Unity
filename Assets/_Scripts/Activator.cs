@@ -17,7 +17,7 @@ public class Activator : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown(key)&&active)
         {
-
+            Destroy(note);
         }
 	}
 
