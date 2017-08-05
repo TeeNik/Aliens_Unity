@@ -21,7 +21,9 @@ public class Activator : MonoBehaviour {
             StartCoroutine(Pressed());
             if (active)
             {
+                AddScore();
                 Destroy(note);
+                active = false;
             }
 
         }
@@ -47,5 +49,10 @@ public class Activator : MonoBehaviour {
         sr.color = new Color(51, 51, 51, 255);
         yield return new WaitForSeconds(0.1f);
         sr.color = old;
+    }
+
+    private void AddScore()
+    {
+        PlayerPrefs.SetInt("score", PlayerPrefs.GetInt("score") + 50);
     }
 }
