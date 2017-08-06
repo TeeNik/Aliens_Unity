@@ -6,6 +6,11 @@ using UnityEngine;
 public class SongGenerator : MonoBehaviour {
 
     public TextAsset file;
+    public GameObject noteObject;
+
+    public Transform[] noteLines;
+    public GameObject[] gg;
+
 
     public struct Metadata
     {
@@ -71,29 +76,25 @@ public class SongGenerator : MonoBehaviour {
         songData.hardExists = false;
         songData.challengeExists = false;
 
-        NoteData noteData = new NoteData();
-        noteData.bars = new List<List<Note>>();
+        NoteData noteData;
 
         var lines = file.text.Split("\n"[0]);
-        for (int i = 0; i < lines.Length; ++i)
-        {
-            var line = lines[i];
-        }
+
+        noteData = ParseNotes(lines);
+
+        StartCoroutine(SpawnNotes(noteData));
     }
 
 
-    private NoteData ParseNotes(List<string> notes)
+    private NoteData ParseNotes(string[] notes)
     {
+        print("Start Parse");
         NoteData noteData = new NoteData();
         noteData.bars = new List<List<Note>>();
 
-        //And then work through each line of the raw note data
-        List<string> bars = new List<string>();
-        for (int i = 0; i < notes.Count; i++)
+        List<Note> bar = new List<Note>();
+        for (int i = 0; i < notes.Length; i++)
         {
-            //Based on different line properties we can determine what data that
-            //line contains, such as a semicolon dictating the end of the note data
-            //or a comma indicating the end of that bar
             string line = notes[i].Trim();
 
             if (line.StartsWith(";"))
@@ -104,17 +105,15 @@ public class SongGenerator : MonoBehaviour {
             if (line.EndsWith(","))
             {
                 noteData.bars.Add(bar);
-                bar = new List();
+                bar = new List<Note>();
             }
             else if (line.EndsWith(":"))
             {
                 continue;
             }
-            else if (line.Length & gt;= 4)
+            else if (line.Length <= 4)
             {
-                //When we have a single 'note row' such as '0010' or '0110'
-                //We check which columns will contain 'steps' and mark the appropriate flags
-                Notes note = new Notes();
+                Note note = new Note();
                 note.left = false;
                 note.down = false;
                 note.up = false;
@@ -138,12 +137,46 @@ public class SongGenerator : MonoBehaviour {
                     note.right = true;
                 }
 
-                //We then add this information to our current bar and continue until end
                 bar.Add(note);
             }
         }
-
+        print("End Parse");
         return noteData;
+    }
+
+    IEnumerator SpawnNotes(NoteData data)
+    {
+        float bpm = 108.650f;
+
+        for (int i = 0; i < data.bars.Count; ++i)
+        {
+            for(int j = 0; j < data.bars[i].Count; ++j)
+            {
+                if (data.bars[i][j].left)
+                {
+                    Instantiate(noteObject, noteLines[0].position, Quaternion.identity);
+                    StartCoroutine(gg[0].GetComponent<Activator>().Pressed());
+                }
+                if (data.bars[i][j].up)
+                {
+                    Instantiate(noteObject, noteLines[1].position, Quaternion.identity);
+                    StartCoroutine(gg[1].GetComponent<Activator>().Pressed());
+                }
+                if (data.bars[i][j].down)
+                {
+                    Instantiate(noteObject, noteLines[2].position, Quaternion.identity);
+                    StartCoroutine(gg[2].GetComponent<Activator>().Pressed());
+                }
+                if (data.bars[i][j].right)
+                {
+                    Instantiate(noteObject, noteLines[3].position, Quaternion.identity);
+                    StartCoroutine(gg[3].GetComponent<Activator>().Pressed());
+                }
+
+                yield return new WaitForSeconds(60/bpm - Time.deltaTime);
+
+            }
+        }
     }
 
     void Update () {

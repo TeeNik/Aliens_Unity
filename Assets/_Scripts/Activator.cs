@@ -49,7 +49,7 @@ public class Activator : MonoBehaviour {
         active = false;
     }
 
-    IEnumerator Pressed()
+    public IEnumerator Pressed()
     {
         Color old = sr.color;
         sr.color = new Color(51, 51, 51, 255);
