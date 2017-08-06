@@ -10,13 +10,20 @@ public class Activator : MonoBehaviour {
     GameObject note;
     SpriteRenderer sr;
 
+    bool createMode = false;
   
     void Awake () {
         sr = GetComponent<SpriteRenderer>();
 	}
 	
 	void Update () {
-        if (Input.GetKeyDown(key))
+        
+
+        if (createMode)
+        {
+
+        }
+        else if (Input.GetKeyDown(key))
         {
             StartCoroutine(Pressed());
             if (active)
@@ -25,9 +32,8 @@ public class Activator : MonoBehaviour {
                 Destroy(note);
                 active = false;
             }
-
         }
-	}
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
